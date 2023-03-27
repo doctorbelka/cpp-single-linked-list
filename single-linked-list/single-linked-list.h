@@ -47,12 +47,14 @@ class SingleLinkedList {
         }
 
 
-        [[nodiscard]] bool operator==(const BasicIterator<Type>& rhs) const noexcept {
+        template <class OtherType>
+        [[nodiscard]] bool operator==(const BasicIterator<OtherType>& rhs) const noexcept {
             return (rhs.node_==this->node_);
         }
 
-
-        [[nodiscard]] bool operator!=(const BasicIterator<Type>& rhs) const noexcept {
+        
+        template <class OtherType>
+        [[nodiscard]] bool operator!=(const BasicIterator<OtherType>& rhs) const noexcept {
            return !(rhs==*this);
         }
 
@@ -97,16 +99,13 @@ public:
     }
 
     SingleLinkedList(const SingleLinkedList& other) {
-   
-        SingleLinkedList tmp;           //Не совсем понял как исправить, нужно через InsertAfter делать? И как найти элемент перед концом?
+    SingleLinkedList tmp;
+    auto it=tmp.before_begin();
         for (auto value : other)    {
-        tmp.PushFront(value);
+        tmp.InsertAfter(it,value);
+        ++it;
         }
-        SingleLinkedList tmp2;
-        for (auto value : tmp)    {
-        tmp2.PushFront(value);
-        }
-        swap(tmp2);
+        swap(tmp);
     }
 
     SingleLinkedList& operator=(const SingleLinkedList& rhs) {
@@ -188,7 +187,6 @@ Clear();
     while (head_.next_node){
     PopFront();
     }
-    size_=0;
     
     }
     
@@ -249,7 +247,7 @@ bool operator<=(const SingleLinkedList<Type>& lhs, const SingleLinkedList<Type>&
 
 template <typename Type>
 bool operator>(const SingleLinkedList<Type>& lhs, const SingleLinkedList<Type>& rhs) {
-    return (!(lhs<rhs)&&(lhs!=rhs));
+    return (rhs<lhs);
 }
 
 template <typename Type>
